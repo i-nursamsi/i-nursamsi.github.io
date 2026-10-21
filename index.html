@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ilyas Nursamsi</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Ilyas Nursamsi: spatial ecologist and remote sensing researcher mapping artisanal small-scale mining and land-use change in the tropics.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: left-aligned single column, 1100px max; hero pairs a short thesis with a synthetic land-cover classification tile. */
+:root {
+  --bg: #f2f4f1;
+  --surface: #e6eae4;
+  --ink: #16201b;
+  --muted: #56625b;
+  --rule: #c9d1c9;
+  --accent: #a3285c;      /* "ASM" class colour from the map legend */
+  --forest: #2f5a40;
+  --font-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --step--1: 0.84rem;
+  --step-0: 1.06rem;
+  --step-1: 1.3rem;
+  --step-2: 1.75rem;
+  --step-3: clamp(2.2rem, 5vw, 3.6rem);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111714; --surface: #1a221d; --ink: #e4ebe6; --muted: #9aa8a0;
+    --rule: #2c3830; --accent: #e0709d; --forest: #8fc29f; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111714; --surface: #1a221d; --ink: #e4ebe6; --muted: #9aa8a0;
+  --rule: #2c3830; --accent: #e0709d; --forest: #8fc29f; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg);
+}
+img { max-width: 100%; }
+a { color: var(--accent); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+
+.wrap {
+  max-width: 1100px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* Header */
+header.site {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--rule);
+}
+header.site .wrap {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; padding-block: 14px; flex-wrap: wrap;
+}
+.brand {
+  font-family: var(--font-display); font-weight: 700; font-size: 1.05rem;
+  color: var(--ink); text-decoration: none; letter-spacing: -0.01em;
+}
+nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 4px 20px; flex-wrap: wrap; }
+nav a {
+  font-family: var(--font-mono); font-size: 0.78rem; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--muted); text-decoration: none;
+}
+nav a:hover { color: var(--ink); }
+
+/* Hero */
+.hero .wrap {
+  display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: 48px; align-items: center; padding-block: 64px 56px;
+}
+.eyebrow {
+  font-family: var(--font-mono); font-size: var(--step--1); color: var(--muted);
+  letter-spacing: 0.06em; text-transform: uppercase; margin: 0 0 18px;
+}
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; letter-spacing: -0.02em; margin: 0; }
+h1 { font-size: var(--step-3); line-height: 1.02; font-weight: 700; }
+h1 .first { display: block; }
+.hero .tagline { font-size: var(--step-1); line-height: 1.45; margin: 22px 0 0; max-width: 34ch; }
+.hero .tagline em { color: var(--accent); font-style: italic; }
+.links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 0.04em;
+  padding: 9px 14px; border: 1px solid var(--rule); border-radius: 3px;
+  color: var(--ink); text-decoration: none; background: transparent;
+}
+.btn:hover { border-color: var(--ink); }
+.btn.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+.tile { margin: 0; }
+.tile-frame { position: relative; border: 1px solid var(--rule); background: var(--surface); line-height: 0; overflow: hidden; }
+.tile canvas { width: 100%; height: auto; display: block; image-rendering: pixelated; aspect-ratio: 8 / 5; }
+.scan {
+  position: absolute; top: 0; bottom: 0; width: 2px; left: 0;
+  background: rgba(255,255,255,0.75); box-shadow: 0 0 12px rgba(255,255,255,0.6);
+  animation: scan 7s linear infinite;
+}
+@keyframes scan { from { left: 0; } to { left: 100%; } }
+@media (prefers-reduced-motion: reduce) { .scan { display: none; } }
+.tile figcaption {
+  font-family: var(--font-mono); font-size: 0.74rem; color: var(--muted);
+  margin-top: 10px; line-height: 1.5;
+}
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 6px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 10px; height: 10px; display: inline-block; border-radius: 1px; }
+
+/* Sections */
+section.block { border-top: 1px solid var(--rule); }
+section.block > .wrap { padding-block: 64px; }
+.sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 32px; flex-wrap: wrap; }
+h2 { font-size: var(--step-2); font-weight: 700; }
+.sec-head p { margin: 0; font-family: var(--font-mono); font-size: var(--step--1); color: var(--muted); }
+h3 { font-size: var(--step-1); font-weight: 500; line-height: 1.25; }
+.prose p { margin: 0 0 1em; max-width: 66ch; }
+
+/* About */
+.about-grid { display: grid; grid-template-columns: 200px minmax(0, 1fr) minmax(0, 300px); gap: 40px; align-items: start; }
+.portrait { width: 200px; aspect-ratio: 4 / 5; max-width: 100%; position: relative; background: var(--surface); border: 1px solid var(--rule); overflow: hidden; }
+.portrait img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.portrait .initials {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  font-family: var(--font-display); font-size: 3rem; font-weight: 700; color: var(--forest);
+}
+.facts { margin: 0; display: grid; gap: 18px; }
+.facts div { border-top: 1px solid var(--rule); padding-top: 10px; }
+.facts dt { font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.facts dd { margin: 4px 0 0; font-size: 0.96rem; line-height: 1.45; }
+
+.path { list-style: none; margin: 36px 0 0; padding: 0; display: grid; gap: 0; }
+.path li { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 20px; padding: 12px 0; border-top: 1px solid var(--rule); }
+.path .when { font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); font-variant-numeric: tabular-nums; padding-top: 3px; }
+.path b { font-weight: 600; }
+.path span.org { color: var(--muted); }
+
+/* Research themes */
+.themes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px; }
+.themes p { margin: 10px 0 0; font-size: 0.98rem; }
+.themes .kicker { font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; display: block; }
+
+/* Projects */
+.projects { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 24px; margin-top: 48px; }
+.project { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.project .thumb { border: 1px solid var(--rule); line-height: 0; background: var(--surface); }
+.project .thumb canvas, .project .thumb img { width: 100%; aspect-ratio: 3 / 2; display: block; image-rendering: pixelated; object-fit: cover; }
+.project .meta { font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted); letter-spacing: 0.03em; }
+.project p { margin: 0; font-size: 0.95rem; }
+.project .out { font-size: 0.88rem; }
+
+/* Publications */
+.pubs-year { display: grid; grid-template-columns: 90px minmax(0, 1fr); gap: 20px; border-top: 1px solid var(--rule); padding-top: 16px; margin-top: 16px; }
+.pubs-year:first-of-type { margin-top: 0; }
+.pubs-year .yr { font-family: var(--font-display); font-weight: 700; font-size: var(--step-1); font-variant-numeric: tabular-nums; }
+.pubs-year ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; }
+.pubs-year li { font-size: 0.96rem; line-height: 1.5; max-width: 78ch; }
+.pubs-year li b { font-weight: 600; }
+.pubs-year .venue { font-style: italic; }
+.pubs-year .doi { font-family: var(--font-mono); font-size: 0.76rem; word-break: break-all; }
+.tag { font-family: var(--font-mono); font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); border: 1px solid currentColor; padding: 1px 5px; border-radius: 2px; margin-left: 6px; white-space: nowrap; vertical-align: 1px; }
+
+/* Teaching etc */
+.cols3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; }
+.cols3 h3 { font-size: 1.02rem; font-weight: 700; margin-bottom: 12px; font-family: var(--font-display); }
+.plain { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; font-size: 0.95rem; line-height: 1.45; }
+.plain .sub { display: block; color: var(--muted); font-size: 0.86rem; }
+.code { font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted); }
+
+/* Contact */
+.contact-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 48px; align-items: start; }
+.email-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 6px 0 22px; }
+.email-row a { font-family: var(--font-mono); font-size: 0.95rem; word-break: break-all; }
+.copy { font-family: var(--font-mono); font-size: 0.72rem; padding: 4px 8px; border: 1px solid var(--rule); background: transparent; color: var(--muted); border-radius: 3px; cursor: pointer; }
+.copy:hover { color: var(--ink); border-color: var(--ink); }
+.profiles { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.profiles a { font-family: var(--font-mono); font-size: 0.86rem; }
+form.contact { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+form.contact .full { grid-column: 1 / -1; }
+form.contact label { display: grid; gap: 5px; font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+form.contact input, form.contact textarea {
+  font: inherit; font-family: var(--font-body); font-size: 1rem; text-transform: none; letter-spacing: 0;
+  color: var(--ink); background: var(--bg); border: 1px solid var(--rule); border-radius: 3px; padding: 10px 12px; width: 100%;
+}
+form.contact input:focus, form.contact textarea:focus { outline: none; border-color: var(--ink); }
+form.contact textarea { min-height: 140px; resize: vertical; }
+form.contact button { justify-self: start; cursor: pointer; }
+.form-note { font-size: 0.86rem; color: var(--muted); margin: 0; }
+
+footer.site { border-top: 1px solid var(--rule); }
+footer.site .wrap { padding-block: 28px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 0.74rem; color: var(--muted); }
+
+@media (max-width: 900px) {
+  .hero .wrap { grid-template-columns: minmax(0, 1fr); gap: 36px; padding-block: 44px; }
+  .about-grid { grid-template-columns: 160px minmax(0, 1fr); }
+  .about-grid .facts { grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .portrait { width: 160px; }
+  .themes, .cols3 { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .projects { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .contact-grid { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+}
+@media (max-width: 560px) {
+  nav ul { gap: 4px 14px; }
+  .about-grid { grid-template-columns: minmax(0, 1fr); }
+  .about-grid .facts { grid-template-columns: minmax(0, 1fr); }
+  .projects { grid-template-columns: minmax(0, 1fr); }
+  .path li, .pubs-year { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  form.contact { grid-template-columns: minmax(0, 1fr); }
+  section.block > .wrap { padding-block: 48px; }
+}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="#top">Ilyas Nursamsi</a>
+    <nav aria-label="Sections">
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#research">Research</a></li>
+        <li><a href="#publications">Publications</a></li>
+        <li><a href="#teaching">Teaching</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">Spatial ecology · Remote sensing</p>
+      <h1><span class="first">Ilyas</span> Nursamsi</h1>
+      <p class="tagline">Mapping mining and land-use change from space, for <em>fairer and more sustainable</em> tropical landscapes.</p>
+      <div class="links">
+        <a class="btn primary" href="#research">See my research</a>
+        <a class="btn" href="https://scholar.google.com/citations?user=Xl2PXA8AAAAJ&amp;hl=en" target="_blank" rel="noopener">Google Scholar</a>
+        <a class="btn" href="https://orcid.org/0000-0001-7236-6683" target="_blank" rel="noopener">ORCID</a>
+        <a class="btn" href="https://github.com/i-nursamsi" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+    <figure class="tile">
+      <div class="tile-frame">
+        <canvas id="heroTile" width="160" height="100" aria-label="Illustrative land-cover classification map showing forest, regrowth, mining clearings, pit ponds and a sediment-laden river"></canvas>
+        <div class="scan" aria-hidden="true"></div>
+      </div>
+      <figcaption>
+        Illustrative classification tile · 10 m pixels · not real data
+        <span class="legend">
+          <span><i style="background:#2f5a40"></i>Forest</span>
+          <span><i style="background:#86a35a"></i>Regrowth</span>
+          <span><i style="background:#a3285c"></i>ASM clearing</span>
+          <span><i style="background:#5fb3b3"></i>Pit pond</span>
+          <span><i style="background:#9b8452"></i>Turbid river</span>
+        </span>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section class="block" id="about">
+  <div class="wrap">
+    <div class="sec-head"><h2>About</h2><p>Brisbane, Australia → Oulu, Finland</p></div>
+    <div class="about-grid">
+      <div class="portrait">
+        <!-- Add your photo as images/profile.jpg -->
+        <img src="images/profile.jpg" alt="Portrait of Ilyas Nursamsi" onerror="this.remove()">
+        <span class="initials" aria-hidden="true">IN</span>
+      </div>
+      <div class="prose">
+        <p>I use satellite Earth observation, from optical and radar imagery to machine learning in Google Earth Engine, to reveal environmental change that is hard to see on the ground. Most of my work focuses on artisanal and small-scale mining (ASM), which supports millions of livelihoods across the tropics but remains largely invisible in official maps and biodiversity metrics.</p>
+        <p>By making these changes measurable at regional and global scales, I aim to give governments, conservation organisations and local communities the evidence they need for inclusive, data-driven decisions. I want my research to connect science and policy, so that the transition to critical minerals and renewable energy does not come at the hidden cost of tropical forests and the people who depend on them.</p>
+        <p>I trained as a biologist in Indonesia, spent several years in the field mapping protected species and land use on Java, and moved into remote sensing during my master's and PhD at the University of Queensland. I have co-authored more than 12 peer-reviewed papers, including in <i>Nature Communications</i>, <i>Current Biology</i> and <i>Scientific Reports</i>.</p>
+      </div>
+      <dl class="facts">
+        <div><dt>Next</dt><dd>Postdoctoral Researcher, MINE-THE-GAP (ERC Consolidator Grant), University of Oulu, from January 2027</dd></div>
+        <div><dt>Now</dt><dd>PhD candidate, School of the Environment, The University of Queensland</dd></div>
+        <div><dt>Affiliations</dt><dd>Remote Sensing Research Centre · Sonter Lab · Centre for Biodiversity and Conservation Science (UQ)</dd></div>
+        <div><dt>Tools</dt><dd>Google Earth Engine, Python, R, SNAP, QGIS, ArcGIS, ENVI, Dinamica EGO</dd></div>
+      </dl>
+    </div>
+
+    <ol class="path" aria-label="Career path">
+      <li><span class="when">2027 →</span><div><b>Postdoctoral Researcher, MINE-THE-GAP</b> <span class="org">· University of Oulu, Finland</span></div></li>
+      <li><span class="when">2025 – 2026</span><div><b>Research Assistant</b> <span class="org">· Rural Economics Centre, University of Southern Queensland</span></div></li>
+      <li><span class="when">2022 – 2026</span><div><b>PhD</b>, Regional analysis of the impact of artisanal small-scale mining on deforestation <span class="org">· The University of Queensland</span></div></li>
+      <li><span class="when">2023 – 2025</span><div><b>Research Assistant and Lab Manager Support</b> <span class="org">· Sonter Lab, The University of Queensland</span></div></li>
+      <li><span class="when">2020 – 2022</span><div><b>Master of Environmental Management</b> <span class="org">· The University of Queensland (Australia Awards Scholar)</span></div></li>
+      <li><span class="when">2015 – 2019</span><div><b>Research Assistant and Field Cartographer</b> <span class="org">· Centre for Environment and Sustainability Science, Universitas Padjadjaran</span></div></li>
+      <li><span class="when">2010 – 2015</span><div><b>Bachelor of Biology</b> <span class="org">· Universitas Padjadjaran, Indonesia</span></div></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ RESEARCH ============ -->
+<section class="block" id="research">
+  <div class="wrap">
+    <div class="sec-head"><h2>Research</h2><p>Three themes, six projects</p></div>
+    <div class="themes">
+      <div>
+        <span class="kicker">Theme 1</span>
+        <h3>Seeing artisanal mining from space</h3>
+        <p>Scalable methods that fuse multispectral and radar imagery to map small, scattered and fast-changing mining sites across the tropics.</p>
+      </div>
+      <div>
+        <span class="kicker">Theme 2</span>
+        <h3>Mining, forests and biodiversity</h3>
+        <p>Measuring what mining costs tropical forests, carbon and wildlife, and where global datasets miss those costs entirely.</p>
+      </div>
+      <div>
+        <span class="kicker">Theme 3</span>
+        <h3>Climate and water intelligence</h3>
+        <p>Turning multi-sensor Earth observation into paddock-scale indicators that land managers use for drought and grazing decisions.</p>
+      </div>
+    </div>
+
+    <div class="projects">
+      <article class="project">
+        <div class="thumb"><canvas data-tile="asm" data-seed="11" width="72" height="48" aria-hidden="true"></canvas></div>
+        <span class="meta">Indonesia · Sentinel-1 + Sentinel-2 · Random Forest · GEE</span>
+        <h3>Mapping ASM with optical–radar fusion</h3>
+        <p>Combining multispectral and SAR imagery improves detection of artisanal mining under persistent tropical cloud cover. A companion review sets out which mapping approaches scale.</p>
+        <p class="out"><a href="https://doi.org/10.1016/j.jag.2024.104015" target="_blank" rel="noopener">JAG 2024</a> · <a href="https://doi.org/10.1016/j.scitotenv.2024.175761" target="_blank" rel="noopener">STOTEN 2024</a></p>
+      </article>
+      <article class="project">
+        <div class="thumb"><canvas data-tile="defor" data-seed="27" width="72" height="48" aria-hidden="true"></canvas></div>
+        <span class="meta">Southeast Asia · Difference-in-differences · Dinamica EGO</span>
+        <h3>How much forest does small-scale mining clear?</h3>
+        <p>My PhD thesis estimates the regional impact of ASM on deforestation using causal impact methods and land-use change scenarios.</p>
+        <p class="out">PhD thesis, The University of Queensland</p>
+      </article>
+      <article class="project">
+        <div class="thumb"><canvas data-tile="global" data-seed="5" width="72" height="48" aria-hidden="true"></canvas></div>
+        <span class="meta">Global · Land cover products · Python, R</span>
+        <h3>Mining pressures missing from global land cover maps</h3>
+        <p>Widely used global land cover maps fail to show mining, so biodiversity metrics built on them overstate current condition and understate room for recovery.</p>
+        <p class="out"><a href="https://doi.org/10.1038/s41598-025-01959-3" target="_blank" rel="noopener">Scientific Reports 2025</a></p>
+      </article>
+      <article class="project">
+        <div class="thumb"><canvas data-tile="nickel" data-seed="42" width="72" height="48" aria-hidden="true"></canvas></div>
+        <span class="meta">Global · Nickel mines · Biomass carbon</span>
+        <h3>Hidden carbon cost of nickel mining</h3>
+        <p>I led the spatial analysis showing that biomass carbon lost to nickel mining has significant implications for climate action and the energy transition.</p>
+        <p class="out"><a href="https://doi.org/10.1038/s41467-024-55703-y" target="_blank" rel="noopener">Nature Communications 2025</a></p>
+      </article>
+      <article class="project">
+        <div class="thumb"><canvas data-tile="water" data-seed="8" width="72" height="48" aria-hidden="true"></canvas></div>
+        <span class="meta">Outback Queensland · Multi-sensor EO · ML pipelines</span>
+        <h3>Desert Channels Climate Resilience Insights</h3>
+        <p>Indicators such as Green Date, dry-season ground cover, rainfall triggers and water availability, produced at paddock scale for Desert Channels Queensland.</p>
+        <p class="out">University of Southern Queensland, 2025–2026</p>
+      </article>
+      <article class="project">
+        <div class="thumb"><canvas data-tile="wildlife" data-seed="19" width="72" height="48" aria-hidden="true"></canvas></div>
+        <span class="meta">Southeast Asia · Camera traps · Niche modelling</span>
+        <h3>Tropical wildlife under disturbance</h3>
+        <p>Multi-scale responses of Sunda pangolins, civets and serow to forest loss and hunting, and the CamTrapAsia dataset of 239 camera trap studies.</p>
+        <p class="out"><a href="https://doi.org/10.1002/wll2.12010" target="_blank" rel="noopener">Wildlife Letters 2023</a> · <a href="https://doi.org/10.1002/ecy.4299" target="_blank" rel="noopener">Ecology 2024</a></p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PUBLICATIONS ============ -->
+<section class="block" id="publications">
+  <div class="wrap">
+    <div class="sec-head"><h2>Publications</h2><p><a href="https://scholar.google.com/citations?user=Xl2PXA8AAAAJ&amp;hl=en" target="_blank" rel="noopener">Full list on Google Scholar</a></p></div>
+
+    <div class="pubs-year"><div class="yr">2025</div><ol>
+      <li>Sonter, L., <b>Nursamsi, I.</b>, Bennun, L., Graham, J., Maus, V., Rainey, H., … Watson, J., &amp; Prescott, G. (2025). Global land cover maps do not reveal mining pressures to biodiversity. <span class="venue">Scientific Reports</span>, 15, 22421. <a class="doi" href="https://doi.org/10.1038/s41598-025-01959-3" target="_blank" rel="noopener">doi:10.1038/s41598-025-01959-3</a></li>
+      <li>Engert, J. E., Souza, C. M., … <b>Nursamsi, I.</b>, &amp; Laurance, W. F. (2025). Explosive growth of secondary roads is linked to widespread tropical deforestation. <span class="venue">Current Biology</span>, 35(7), 1641–1648. <a class="doi" href="https://doi.org/10.1016/j.cub.2025.02.017" target="_blank" rel="noopener">doi:10.1016/j.cub.2025.02.017</a></li>
+      <li>Mervine, E. M., Valenta, R. K., Paterson, J. S., Mudd, G. M., Werner, T. T., <b>Nursamsi, I.</b>, &amp; Sonter, L. J. (2025). Biomass carbon emissions from nickel mining have significant implications for climate action. <span class="venue">Nature Communications</span>, 16, 481. <a class="doi" href="https://doi.org/10.1038/s41467-024-55703-y" target="_blank" rel="noopener">doi:10.1038/s41467-024-55703-y</a></li>
+    </ol></div>
+
+    <div class="pubs-year"><div class="yr">2024</div><ol>
+      <li><b>Nursamsi, I.</b>, Phinn, S. R., Levin, N., Luskin, M. S., &amp; Sonter, L. J. (2024). Remote sensing of artisanal and small-scale mining: A review of scalable mapping approaches. <span class="venue">Science of the Total Environment</span>, 175761. <a class="doi" href="https://doi.org/10.1016/j.scitotenv.2024.175761" target="_blank" rel="noopener">doi:10.1016/j.scitotenv.2024.175761</a><span class="tag">First author</span></li>
+      <li><b>Nursamsi, I.</b>, Sonter, L. J., Luskin, M. S., &amp; Phinn, S. (2024). Feasibility of multi-spectral and radar data fusion for mapping artisanal small-scale mining: A case study from Indonesia. <span class="venue">International Journal of Applied Earth Observation and Geoinformation</span>, 132, 104015. <a class="doi" href="https://doi.org/10.1016/j.jag.2024.104015" target="_blank" rel="noopener">doi:10.1016/j.jag.2024.104015</a><span class="tag">First author</span></li>
+      <li>Mendes, C. P., Albert, W. R., Amir, Z., … <b>Nursamsi, I.</b>, … &amp; Luskin, M. S. (2024). CamTrapAsia: A dataset of tropical forest vertebrate communities from 239 camera trapping studies. <span class="venue">Ecology</span>, 105(6), e4299. <a class="doi" href="https://doi.org/10.1002/ecy.4299" target="_blank" rel="noopener">doi:10.1002/ecy.4299</a></li>
+      <li>Sulton, M. N., Aurina, D. M., … <b>Nursamsi, I.</b>, … &amp; Setyawan, A. D. (2024). Predicting the current and future distributions of <i>Pinus merkusii</i> in Southeast Asia under climate change. <span class="venue">Biodiversitas</span>, 25(3). <a class="doi" href="https://doi.org/10.13057/biodiv/d250328" target="_blank" rel="noopener">doi:10.13057/biodiv/d250328</a></li>
+    </ol></div>
+
+    <div class="pubs-year"><div class="yr">2023</div><ol>
+      <li><b>Nursamsi, I.</b>, Amir, Z., Decoeur, H., Moore, J. H., &amp; Luskin, M. S. (2023). Sunda pangolins show inconsistent responses to disturbances across multiple scales. <span class="venue">Wildlife Letters</span>, 1(2), 59–70. <a class="doi" href="https://doi.org/10.1002/wll2.12010" target="_blank" rel="noopener">doi:10.1002/wll2.12010</a><span class="tag">First author</span></li>
+      <li>Luskin, M. S., Arnold, L., Sovie, A., Amir, Z., Chua, M. A. H., Dehaudt, B., Dunn, A., <b>Nursamsi, I.</b>, Moore, J. H., &amp; Mendes, C. P. (2023). Mesopredators in forest edges. <span class="venue">Wildlife Letters</span>, 1(3), 107–118. <a class="doi" href="https://doi.org/10.1002/wll2.12023" target="_blank" rel="noopener">doi:10.1002/wll2.12023</a></li>
+      <li>Elliot, C., Amir, Z., Mendes, C. P., Moore, J. H., <b>Nursamsi, I.</b>, &amp; Luskin, M. S. (2023). The highs and lows of serow (<i>Capricornis sumatraensis</i>): multi-scale habitat associations inform large mammal conservation strategies in the face of synergistic threats of deforestation, hunting, and climate change. <span class="venue">Raffles Bulletin of Zoology</span>, 71, 400–416. <a class="doi" href="https://doi.org/10.26107/RBZ-2023-0030" target="_blank" rel="noopener">doi:10.26107/RBZ-2023-0030</a></li>
+    </ol></div>
+
+    <div class="pubs-year"><div class="yr">2022</div><ol>
+      <li>Dehaudt, B., Amir, Z., Decoeur, H., Gibson, L., Mendes, C., Moore, J. H., <b>Nursamsi, I.</b>, Sovie, A., &amp; Luskin, M. S. (2022). Common palm civets <i>Paradoxurus hermaphroditus</i> are positively associated with humans and forest degradation with implications for seed dispersal and zoonotic diseases. <span class="venue">Journal of Animal Ecology</span>, 91(4), 794–804. <a class="doi" href="https://doi.org/10.1111/1365-2656.13663" target="_blank" rel="noopener">doi:10.1111/1365-2656.13663</a></li>
+      <li>Dunn, A., Amir, Z., Decoeur, H., Dehaudt, B., <b>Nursamsi, I.</b>, Mendes, C., Moore, J. H., Negret, P. J., Sovie, A., &amp; Luskin, M. S. (2022). The ecology of the banded civet (<i>Hemigalus derbyanus</i>) in Southeast Asia with implications for mesopredator release, zoonotic diseases, and conservation. <span class="venue">Ecology and Evolution</span>, 12(5), e8852. <a class="doi" href="https://doi.org/10.1002/ece3.8852" target="_blank" rel="noopener">doi:10.1002/ece3.8852</a></li>
+    </ol></div>
+  </div>
+</section>
+
+<!-- ============ TEACHING / TALKS / AWARDS ============ -->
+<section class="block" id="teaching">
+  <div class="wrap">
+    <div class="sec-head"><h2>Teaching, talks and recognition</h2></div>
+    <div class="cols3">
+      <div>
+        <h3>Teaching</h3>
+        <ul class="plain">
+          <li>Tutor and demonstrator, The University of Queensland<span class="sub">2023 – present</span></li>
+          <li>Geographical Information Systems <span class="code">GEOM2001</span></li>
+          <li>Introduction to Earth Observation Sciences <span class="code">GEOM2000/7000</span></li>
+          <li>Advanced Image Processing and Modelling <span class="code">GEOM3002/7001</span></li>
+          <li>Workshops introducing open-source GIS and free satellite imagery to environmental agencies in Indonesia</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Talks</h3>
+        <ul class="plain">
+          <li>Scalable mapping approaches for artisanal and small-scale mining: enhancing land use management through multi-satellite integration<span class="sub">Oral presentation, Global Land Programme Open Science Meeting, Oaxaca, Mexico, November 2024</span></li>
+        </ul>
+        <h3 style="margin-top:28px">Service</h3>
+        <ul class="plain">
+          <li>Member, Wilderness Specialist Group, IUCN World Commission on Protected Areas<span class="sub">2024 – present</span></li>
+          <li>Member, Society for Conservation Biology</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Scholarships and awards</h3>
+        <ul class="plain">
+          <li>Australian Government Research Training Program Scholarship<span class="sub">2022 – 2025</span></li>
+          <li>Travel Grant, UQ School of Earth and Environmental Sciences<span class="sub">2023</span></li>
+          <li>Summer Research Scholarship, The University of Queensland<span class="sub">2021</span></li>
+          <li>Australia Awards Scholarship<span class="sub">2020 – 2022</span></li>
+          <li>Student Creativity Program, Scientific Research, Indonesia<span class="sub">2014</span></li>
+          <li>Indonesian Government full undergraduate scholarship<span class="sub">2010 – 2015</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section class="block" id="contact">
+  <div class="wrap">
+    <div class="sec-head"><h2>Contact</h2><p>Collaborations, data questions and speaking invitations welcome</p></div>
+    <div class="contact-grid">
+      <div>
+        <p class="form-note">Email</p>
+        <div class="email-row">
+          <a id="emailAddr" href="mailto:ilyasnursyamsi05@gmail.com">ilyasnursyamsi05@gmail.com</a>
+          <button class="copy" type="button" id="copyEmail">Copy</button>
+        </div>
+        <p class="form-note" style="margin-bottom:8px">Profiles</p>
+        <ul class="profiles">
+          <li><a href="https://scholar.google.com/citations?user=Xl2PXA8AAAAJ&amp;hl=en" target="_blank" rel="noopener">Google Scholar ↗</a></li>
+          <li><a href="https://orcid.org/0000-0001-7236-6683" target="_blank" rel="noopener">ORCID 0000-0001-7236-6683 ↗</a></li>
+          <li><a href="https://github.com/i-nursamsi" target="_blank" rel="noopener">GitHub i-nursamsi ↗</a></li>
+          <!-- Add LinkedIn: <li><a href="https://www.linkedin.com/in/YOUR-HANDLE" target="_blank" rel="noopener">LinkedIn ↗</a></li> -->
+        </ul>
+      </div>
+      <!-- Form submissions are emailed to you by FormSubmit.co. The first submission sends you a one-time activation email. -->
+      <form class="contact" id="contactForm" action="https://formsubmit.co/ilyasnursyamsi05@gmail.com" method="POST">
+        <input type="hidden" name="_subject" value="New message from your research website">
+        <input type="hidden" name="_template" value="table">
+        <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+        <label for="f-name">Name<input id="f-name" name="name" type="text" required autocomplete="name"></label>
+        <label for="f-email">Email<input id="f-email" name="email" type="email" required autocomplete="email"></label>
+        <label for="f-org" class="full">Affiliation or organisation (optional)<input id="f-org" name="affiliation" type="text" autocomplete="organization"></label>
+        <label for="f-subject" class="full">Subject<input id="f-subject" name="subject" type="text" required></label>
+        <label for="f-msg" class="full">Message<textarea id="f-msg" name="message" required></textarea></label>
+        <button class="btn primary" type="submit">Send message</button>
+        <p class="form-note full" id="formNote" hidden></p>
+      </form>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <span>© <span id="yr">2026</span> Ilyas Nursamsi</span>
+    <span>Map tiles on this page are illustrative, not real data</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  // Seeded random + value noise, used to draw the illustrative land-cover tiles.
+  function rng(seed) { let s = seed >>> 0 || 1; return () => (s = (s * 1664525 + 1013904223) >>> 0) / 4294967296; }
+  function noise(w, h, cell, rand) {
+    const gw = Math.ceil(w / cell) + 2, gh = Math.ceil(h / cell) + 2, g = [];
+    for (let i = 0; i < gw * gh; i++) g.push(rand());
+    const sm = t => t * t * (3 - 2 * t);
+    return (x, y) => {
+      const gx = x / cell, gy = y / cell, x0 = Math.floor(gx), y0 = Math.floor(gy);
+      const tx = sm(gx - x0), ty = sm(gy - y0);
+      const a = g[y0 * gw + x0], b = g[y0 * gw + x0 + 1], c = g[(y0 + 1) * gw + x0], d = g[(y0 + 1) * gw + x0 + 1];
+      return a + (b - a) * tx + (c - a) * ty + (a - b - c + d) * tx * ty;
+    };
+  }
+  const C = { forest: "#2f5a40", forest2: "#3a6b4a", regrow: "#86a35a", asm: "#a3285c", pond: "#5fb3b3", river: "#9b8452",
+              bare: "#c8a46e", road: "#d9d2c2", crop: "#b9c46a", dry: "#d7c49a", grass: "#a9b56f", water: "#3f7fa6" };
+
+  function draw(canvas, kind, seed) {
+    const ctx = canvas.getContext("2d"), w = canvas.width, h = canvas.height, r = rng(seed);
+    const n1 = noise(w, h, Math.max(6, w / 9), r), n2 = noise(w, h, Math.max(3, w / 22), r), n3 = noise(w, h, 2.5, r);
+    const ph = r() * 6, amp = h * (0.12 + r() * 0.1), mid = h * (0.4 + r() * 0.2);
+    const riverY = x => mid + Math.sin(x / w * 5 + ph) * amp + Math.sin(x / w * 13 + ph) * amp * 0.25;
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      const v = n1(x, y), f = n2(x, y), m = n3(x, y);
+      const d = Math.abs(y - riverY(x));
+      let col = v > 0.55 ? C.forest : C.forest2;
+      if (v < 0.3) col = C.regrow;
+      if (kind === "asm" || kind === "defor") {
+        const p = Math.exp(-d / (w * (kind === "defor" ? 0.16 : 0.09))) * (0.6 + f * 0.8);
+        if (p > 0.62) col = m > 0.72 ? C.pond : C.asm;
+        else if (p > 0.5 && m > 0.5) col = C.bare;
+        if (d < w * 0.012 + 0.6) col = C.river;
+      } else if (kind === "global") {
+        const blocks = (Math.floor(x / 9) + Math.floor(y / 9)) % 2;
+        col = v > 0.5 ? C.forest : (blocks ? C.crop : C.regrow);
+        if (f > 0.7 && v > 0.45) col = C.asm;
+      } else if (kind === "nickel") {
+        const cx = w * 0.55, cy = h * 0.5, rr = Math.hypot((x - cx) / w, (y - cy) / h);
+        const ring = Math.floor((rr + f * 0.08) * 22);
+        if (rr < 0.24 + f * 0.06) col = ring % 2 ? "#b4574a" : "#8e3f37";
+        if (rr < 0.07) col = C.pond;
+        else if (rr < 0.32 && rr >= 0.24 + f * 0.06 && m > 0.4) col = C.bare;
+      } else if (kind === "water") {
+        col = v > 0.62 ? C.grass : v > 0.4 ? C.dry : "#e2d3ab";
+        if (d < 1.4 + f * 2.2 && f > 0.35) col = C.water;
+        if (x % 24 === 0 || y % 16 === 0) col = "#efe6cf";
+      } else if (kind === "wildlife") {
+        const edge = x / w + (f - 0.5) * 0.4;
+        if (edge > 0.68) col = m > 0.5 ? C.crop : "#c9b976";
+        if (Math.abs(edge - 0.68) < 0.025) col = C.road;
+      }
+      ctx.fillStyle = col; ctx.fillRect(x, y, 1, 1);
+    }
+    if (kind === "wildlife") {   // camera trap stations
+      ctx.fillStyle = "#ffffff";
+      for (let i = 0; i < 9; i++) { const x = Math.floor(6 + r() * w * 0.55), y = Math.floor(5 + r() * (h - 10)); ctx.fillRect(x, y, 2, 2); }
+    }
+  }
+
+  draw(document.getElementById("heroTile"), "asm", 7);
+  document.querySelectorAll("canvas[data-tile]").forEach(c => draw(c, c.dataset.tile, +c.dataset.seed));
+
+  document.getElementById("yr").textContent = new Date().getFullYear();
+
+  const copyBtn = document.getElementById("copyEmail");
+  copyBtn.addEventListener("click", () => {
+    const text = document.getElementById("emailAddr").textContent;
+    const done = () => { copyBtn.textContent = "Copied"; setTimeout(() => copyBtn.textContent = "Copy", 1600); };
+    const fallback = () => { const s = getSelection(), rg = document.createRange(); rg.selectNodeContents(document.getElementById("emailAddr")); s.removeAllRanges(); s.addRange(rg); copyBtn.textContent = "Selected"; };
+    try { navigator.clipboard.writeText(text).then(done, fallback); } catch (e) { fallback(); }
+  });
+
+  const form = document.getElementById("contactForm");
+  if (form.dataset.preview) {
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+      const note = document.getElementById("formNote");
+      note.hidden = false;
+      note.textContent = "This is a preview. On the live site this form emails your message to Ilyas.";
+    });
+  }
+})();
+</script>
+</body>
+</html>
